@@ -25,8 +25,8 @@ Date of the commands below: 2026-09-30. Machine: Linux x86_64, 76 CPUs, 66,992,4
 | 15 Streamlit | PARTIAL | `frontend/app.py` and `frontend/view.py` exist. Hit rows are unit-tested. The page was not exercised in a browser. |
 | 16 Transformers inference | PARTIAL | `TransformersLocalProvider` is implemented (`eval` and `inference_mode`). A random GPT-2 forward pass and `generate` ran on CPU. A pretrained checkpoint was not loaded. |
 | 17 LoRA / QLoRA | SKIPPED | The training function, PEFT config, and 240-pair dataset exist. Training did not start. Reason: no CUDA. Report status `NOT_EXECUTED`. |
-| 18 Docker | PARTIAL | Dockerfile and Compose file exist. `docker-compose config` succeeded. The image was not built. The stack was not started. |
-| 19 Kubernetes and Helm | PARTIAL | Manifests exist. `helm template` succeeded for the default chart and for ingress plus GPU. No cluster install. |
+| 18 Docker | PASS | `docker-compose up -d --build` on 2026-09-30. `/health`, `/ready`, upload, pgvector, and hybrid search succeeded. `/chat` is 503 without Ollama. Streamlit returned HTTP 200 and was not opened in a browser. |
+| 19 Kubernetes and Helm | PASS | Minikube install with in-cluster pgvector. Probes passed. `helm upgrade` and `helm rollback` succeeded. EKS was not used. |
 | 20 AWS | SKIPPED | Design is written. No AWS API was called. |
 
 PARTIAL means the code is there and the part that does not need extra services was tested. It does not mean a neural quality number exists.
@@ -89,7 +89,7 @@ All three wrote `NOT_EXECUTED`. `train_lora.py` also wrote 240 training pairs to
 docker-compose -f docker-compose.yml config
 ```
 
-Exit 0. Docker 29.1.3. Compose v1.29.2. The `docker compose` plugin is not installed on this host. `docker build` was not run.
+Docker 29.1.3. Compose v1.29.2. The `docker compose` plugin is not installed on this host. `docker-compose up -d --build` later tagged `technical-rag-assistant:0.1.0` and started postgres, api, and ui. See `docs/deployment/docker.md`.
 
 ### Helm
 
@@ -99,7 +99,7 @@ helm template technical-rag-assistant deployment/helm/technical-rag-assistant \
   --set ingress.enabled=true --set gpu.enabled=true
 ```
 
-Both succeeded. The GPU render contains `nvidia.com/gpu`, `/health`, and `/ready`. `helm install` was not run.
+Both succeeded. The GPU render contains `nvidia.com/gpu`, `/health`, and `/ready`. A later Minikube install, upgrade, and rollback are recorded in `docs/deployment/kubernetes.md`. That install is not an EKS deployment.
 
 ## Checklist
 
@@ -108,8 +108,8 @@ Both succeeded. The GPU render contains `nvidia.com/gpu`, `/health`, and `/ready
 | Unit tests | 72 passed |
 | Integration tests | Passed inside the same pytest run (`tests/test_integration.py`) |
 | API tests | Passed inside the same pytest run (`tests/test_api.py`) |
-| Docker validation | `docker-compose config` passed. Image not built. Stack not started. |
-| Helm validation | `helm template` passed. Not installed. |
+| Docker validation | Stack started. `/health`, `/ready`, upload, and search passed. Chat 503 without Ollama. |
+| Helm validation | `helm template` passed. Minikube install, upgrade, and rollback passed. EKS not installed. |
 | Model availability | BGE, E5, and the reranker were not loaded |
 | GPU availability | None. `nvidia-smi` missing. CUDA false |
 | Ollama availability | Not running |
@@ -162,14 +162,15 @@ Docker, on a host with the Compose v2 plugin if you want that exact command:
 docker compose up --build
 ```
 
-This host can use `docker-compose up --build`. That was not run.
+`docker-compose up -d --build` was run on this host. The result is in `docs/deployment/docker.md`.
 
-Kubernetes, after a cluster and a pushed image:
+Minikube was installed with `values-minikube.yaml`. EKS still needs a registry and a cluster:
 
 ```bash
-helm upgrade --install rag deployment/helm/technical-rag-assistant \
-  --set image.repository=<registry>/technical-rag-assistant \
-  --set image.tag=0.1.0
+helm upgrade --install technical-rag-assistant deployment/helm/technical-rag-assistant \
+  -f deployment/helm/technical-rag-assistant/values-eks.yaml \
+  --set image.repository=<account>.dkr.ecr.<region>.amazonaws.com/technical-rag-assistant \
+  --set secret.databaseUrl='postgresql://USER:PASSWORD@RDS_HOST:5432/rag'
 ```
 
 AWS: follow `docs/deployment/aws.md`. Nothing in that document has been applied.

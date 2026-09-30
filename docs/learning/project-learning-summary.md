@@ -103,13 +103,13 @@ Question: why is the stored filename `passwd.md` when the client sent `../../etc
 
 ## Docker
 
-The Compose file starts pgvector, the API, and Streamlit. `docker-compose config` succeeded with Compose 1.29.2. The image was not built and the stack was not started.
+The Compose file starts pgvector, the API, and Streamlit from one image tag. On this machine `docker-compose up -d --build` ran that stack. `/chat` stayed 503 because Ollama was not running. The measured search hits are in `docs/deployment/docker.md`, not in the benchmark JSON.
 
 Question: why does the API service set `VECTOR_BACKEND=postgres` inside Compose while the default on a laptop is `memory`?
 
 ## Kubernetes
 
-The Helm chart renders a Deployment, Service, ConfigMap, Secret, probes, and resource limits. `helm template` succeeded, including the ingress and GPU overlays. Nothing was installed.
+The Helm chart renders a Deployment, Service, ConfigMap, Secret, an optional Postgres StatefulSet, probes, and resource limits. `helm template` succeeded, including the ingress and GPU overlays. The chart was also installed on Minikube, upgraded, and rolled back. EKS was not installed.
 
 Question: what is the difference between `/health` and `/ready`?
 

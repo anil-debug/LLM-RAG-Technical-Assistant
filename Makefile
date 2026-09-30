@@ -1,4 +1,7 @@
-.PHONY: test evaluate api ui helm-template compose-config inspect train-lora
+.PHONY: test evaluate api ui helm-template compose-config compose-up compose-down compose-logs inspect train-lora
+
+# Prefer the v2 plugin. Fall back to the v1 binary this host has.
+COMPOSE := $(shell if docker compose version >/dev/null 2>&1; then echo docker compose; else echo docker-compose; fi)
 
 export UV_LINK_MODE ?= copy
 
@@ -24,9 +27,23 @@ ui:
 
 helm-template:
 	helm template technical-rag-assistant deployment/helm/technical-rag-assistant
+	helm template technical-rag-assistant deployment/helm/technical-rag-assistant -f deployment/helm/technical-rag-assistant/values-minikube.yaml
+	helm template technical-rag-assistant deployment/helm/technical-rag-assistant -f deployment/helm/technical-rag-assistant/values-eks.yaml
+	helm template technical-rag-assistant deployment/helm/technical-rag-assistant --set ingress.enabled=true --set gpu.enabled=true
 
 compose-config:
-	docker compose config
+	test -f .env || cp .env.example .env
+	$(COMPOSE) -f docker-compose.yml config
+
+compose-up:
+	test -f .env || cp .env.example .env
+	$(COMPOSE) -f docker-compose.yml up -d --build
+
+compose-down:
+	$(COMPOSE) -f docker-compose.yml down
+
+compose-logs:
+	$(COMPOSE) -f docker-compose.yml logs --tail=100
 
 inspect:
 	uv run python scripts/inspect_model.py

@@ -29,3 +29,13 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- default "default" .Values.serviceAccount.name -}}
 {{- end -}}
 {{- end -}}
+
+{{- define "rag.databaseUrl" -}}
+{{- if .Values.secret.databaseUrl -}}
+{{- .Values.secret.databaseUrl -}}
+{{- else if .Values.postgres.enabled -}}
+{{- printf "postgresql://%s:%s@%s-postgres:5432/%s" .Values.postgres.user .Values.postgres.password (include "rag.fullname" .) .Values.postgres.database -}}
+{{- else -}}
+{{- fail "secret.databaseUrl is required when postgres.enabled is false" -}}
+{{- end -}}
+{{- end -}}

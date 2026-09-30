@@ -312,7 +312,7 @@ Answers refer to this repository. If a number is quoted, it comes from a JSON re
 
 1. **What does the Dockerfile install?** Python 3.12, uv, and the locked dependencies, including the CPU torch wheel. The command is `uvicorn api.main:app`.
 
-2. **Was the image built?** No. `docker-compose config` succeeded. `docker build` was not run.
+2. **Was the image built?** Yes, on this machine, as `technical-rag-assistant:0.1.0`. `docker-compose up -d --build` started Postgres, the API, and Streamlit. `/chat` returned 503 because Ollama was down. Details are in `docs/deployment/docker.md`.
 
 3. **Why three Compose services?** Postgres with pgvector, the API, and Streamlit. The UI only speaks HTTP to the API.
 
@@ -344,7 +344,7 @@ Answers refer to this repository. If a number is quoted, it comes from a JSON re
 
 17. **Why is the GPU limit dangerous on the CPU API?** Every API replica would request a GPU. A real layout is a separate inference Deployment. The AWS note says that.
 
-18. **What did `helm template` prove?** The chart renders, including probes, the secret, the config, and the optional ingress. It did not prove a cluster install.
+18. **What did `helm template` prove?** The chart renders, including probes, the secret, the config, and the optional ingress. A separate Minikube install proved the pods, the pgvector extension, `helm upgrade`, and `helm rollback`. That is not an EKS install.
 
 19. **How is ingress routed?** UI on `rag.example.com`, API on `api.rag.example.com`. There is no `/api` path prefix, because FastAPI is mounted at `/`.
 
@@ -386,9 +386,9 @@ Answers refer to this repository. If a number is quoted, it comes from a JSON re
 
 17. **What must you not call GPU memory?** Client time waiting on a remote vLLM. The report methodology has to name the meter.
 
-18. **Where does the Helm image come from?** ECR, after a `docker build` and `docker push` that were not run. The chart's `image.repository` is overridden at install.
+18. **Where does the Helm image come from?** On Minikube it was loaded with `minikube image load` after `docker build`. On EKS it would come from ECR. That push was not run. The chart's `image.repository` is overridden at install.
 
-19. **What is the install command you would run later?** `helm upgrade --install` with `vectorBackend=postgres`, a real `databaseUrl`, and `ingress.enabled=true`. It is written in `docs/deployment/aws.md`. It was not executed.
+19. **What is the EKS install command?** `helm upgrade --install` with `values-eks.yaml`, the ECR repository, and a real `databaseUrl`. It is in `docs/deployment/kubernetes.md`. It was not executed. The same chart was installed on Minikube with `values-minikube.yaml`.
 
 20. **What is the first security review item?** Replace the placeholder secret, restrict the ALB to the right CIDR, and confirm the API role cannot read other secrets.
 

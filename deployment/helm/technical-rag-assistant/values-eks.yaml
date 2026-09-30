@@ -1,0 +1,32 @@
+# AWS EKS. No in-cluster database. RDS is the system of record.
+# Replace the image repository and secret.databaseUrl at install time.
+# Do not commit a real password. This file has a placeholder host only.
+
+image:
+  repository: ACCOUNT.dkr.ecr.REGION.amazonaws.com/technical-rag-assistant
+  tag: "0.1.0"
+  pullPolicy: IfNotPresent
+
+postgres:
+  enabled: false
+
+config:
+  vectorBackend: postgres
+  embeddingDevice: cpu
+  llmBaseUrl: http://vllm.internal:8000/v1
+  llmModel: qwen2.5:7b
+
+secret:
+  databaseUrl: postgresql://rag:REPLACE_ME@REPLACE_ME.rds.amazonaws.com:5432/rag
+  llmApiKey: REPLACE_ME
+
+ingress:
+  enabled: true
+  className: alb
+  host: rag.example.com
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+
+gpu:
+  enabled: false

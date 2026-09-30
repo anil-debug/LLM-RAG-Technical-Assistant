@@ -1,0 +1,21 @@
+# Minikube, kind, or any cluster that already has the image on the node.
+# Does not use Docker Compose. Load the image before install:
+#   minikube image load technical-rag-assistant:0.1.0
+#   minikube image load pgvector/pgvector:pg16
+
+image:
+  repository: technical-rag-assistant
+  tag: "0.1.0"
+  pullPolicy: Never
+
+postgres:
+  enabled: true
+  pullPolicy: IfNotPresent
+
+config:
+  vectorBackend: postgres
+  embeddingDevice: cpu
+  llmBaseUrl: http://host.docker.internal:11434/v1
+
+ingress:
+  enabled: false

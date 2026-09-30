@@ -1,6 +1,8 @@
-# Defaults target a cluster that does not yet have RDS or a GPU.
-# Switch vectorBackend to postgres and set databaseUrl before production use.
-# This chart was rendered with `helm template`. It was not installed on a cluster.
+# Self-contained cluster: API, UI, and PostgreSQL 16 with pgvector.
+# This does not require Docker Compose.
+# For AWS, use values-eks.yaml and point secret.databaseUrl at RDS.
+# For Minikube, use values-minikube.yaml so the locally loaded image is used.
+# The password below is a local cluster placeholder. Do not reuse it on RDS.
 
 nameOverride: ""
 fullnameOverride: ""
@@ -38,7 +40,7 @@ ui:
       memory: 1Gi
 
 config:
-  vectorBackend: memory
+  vectorBackend: postgres
   embeddingModel: BAAI/bge-base-en-v1.5
   embeddingDim: "768"
   embeddingDevice: cpu
@@ -49,10 +51,29 @@ config:
   rerankerEnabled: "false"
   logLevel: INFO
 
+# Empty databaseUrl is filled with the in-cluster Postgres service.
+# Set it when postgres.enabled is false (RDS or another external database).
 secret:
-  # Local placeholder. Replace from AWS Secrets Manager or an external secret store.
-  databaseUrl: postgresql://rag:change-me@postgres:5432/rag
+  databaseUrl: ""
   llmApiKey: ollama
+
+postgres:
+  enabled: true
+  image: pgvector/pgvector:pg16
+  pullPolicy: IfNotPresent
+  user: rag
+  password: rag
+  database: rag
+  storage: 5Gi
+  # Empty uses the cluster default StorageClass.
+  storageClass: ""
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
 
 ingress:
   enabled: false

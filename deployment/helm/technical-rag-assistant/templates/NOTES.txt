@@ -2,7 +2,8 @@ Technical RAG assistant chart {{ .Chart.Version }}.
 
 API service: {{ include "rag.fullname" . }}-api:{{ .Values.api.service.port }}
 Vector backend: {{ .Values.config.vectorBackend }}
+In-cluster Postgres: {{ .Values.postgres.enabled }}
 
-This render does not mean the chart was installed.
-Set secret.databaseUrl from a secret store before using postgres.
-The image {{ .Values.image.repository }}:{{ .Values.image.tag }} must be built and pushed separately.
+The image {{ .Values.image.repository }}:{{ .Values.image.tag }} is not pulled by this note.
+When postgres.enabled is false, secret.databaseUrl must be the external database, such as RDS.
+Rendering this chart does not install it. See docs/deployment/kubernetes.md.

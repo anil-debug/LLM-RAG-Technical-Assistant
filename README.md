@@ -17,13 +17,13 @@ Measured results are copied from `evaluation/reports/`. A blank or null metric w
 | Entity extraction | Executed locally | `evaluation/reports/entity_extraction_20260930_020515.json` |
 | Entity-boost ablation | Executed locally | `evaluation/reports/intelligence_ablation_20260930_020517.json` |
 | Tiny random GPT-2 forward pass | Executed locally on CPU | `evaluation/reports/transformers_random_init_20260930_020527.json` |
-| BGE vs E5 quality | Not executed | Hugging Face was unreachable and weights were not cached |
+| BGE vs E5 quality | Not executed | The comparison report was not re-run. A later Compose upload did download BGE. E5 was not scored |
 | LLM answer quality | Not executed | Ollama was not listening on port 11434 |
 | Reranker model weights | Not loaded | The class is tested with an injected scoring function |
 | LoRA / QLoRA training | Not executed | `torch.cuda.is_available()` is false |
 | Classifier training on real embeddings | Not executed | Embedding weights were not available |
-| Docker image | Not built | `docker-compose config` succeeded with Compose 1.29.2 |
-| Kubernetes install | Not executed | `helm template` succeeded, including ingress and GPU overlays |
+| Docker Compose | Executed locally | `docker-compose up -d --build` on 2026-09-30. `/health`, `/ready`, upload, and hybrid search succeeded. `/chat` returned 503 because Ollama was not running |
+| Kubernetes | Executed on Minikube | Helm install, upgrade, and rollback. Pods ready, pgvector extension created. EKS was not used |
 | AWS | Not executed | Design only, in `docs/deployment/aws.md` |
 | Streamlit in a browser | Not executed | View-model helpers are unit-tested. No browser session was run |
 
@@ -245,29 +245,44 @@ uv run python scripts/train_lora.py --model <causal-lm-id> --output models/lora
 
 That command exits without training on a machine where CUDA is unavailable. Explanation: `docs/design/prompting-rag-finetuning.md`.
 
+## Choose a deployment path
+
+These three paths do not depend on each other. They share the image tag `technical-rag-assistant:0.1.0` and the same environment variable names.
+
+```text
+Docker Compose     one machine: API, Streamlit, PostgreSQL + pgvector
+Kubernetes         Minikube or another cluster, including in-cluster Postgres
+AWS EKS            the same Helm chart, RDS instead of the StatefulSet
+```
+
+Commands, shutdown, upgrade, rollback, and the results of the local runs are in `docs/deployment/docker.md`, `docs/deployment/kubernetes.md`, and `docs/deployment/aws.md`.
+
 ## Docker
 
 ```bash
-docker compose up --build
+cp .env.example .env
+docker-compose up -d --build
 ```
 
-Services: `pgvector/pgvector:pg16`, the API on port 8000, Streamlit on port 8501. The database password `rag` is for local Compose only.
+On this host the v2 plugin is absent, so the command is `docker-compose`. `make compose-up` picks whichever binary exists. The database password `rag` is for this local stack only.
 
-This host has Docker 29 and Compose v1.29.2 as `docker-compose`. The v2 plugin (`docker compose`) is not installed. `docker-compose config` succeeded. The image was not built and the stack was not started. See `docs/deployment/docker.md`.
+The stack was started here. `/health` and `/ready` succeeded, a manual was indexed with `BAAI/bge-base-en-v1.5`, and hybrid search returned the `0x1F` / `SYS_FAN1` section. `/chat` returned 503 because Ollama was not running. Streamlit answered HTTP 200 and was not exercised in a browser.
 
 ## Kubernetes
 
 ```bash
-helm template technical-rag-assistant deployment/helm/technical-rag-assistant
-helm template technical-rag-assistant deployment/helm/technical-rag-assistant \
-  --set ingress.enabled=true --set gpu.enabled=true
+helm upgrade --install technical-rag-assistant \
+  deployment/helm/technical-rag-assistant \
+  -f deployment/helm/technical-rag-assistant/values-minikube.yaml
 ```
 
-Both renders succeeded. They produce a Deployment, Service, ConfigMap, Secret, liveness on `/health`, readiness on `/ready`, and resource requests and limits. Ingress and the GPU limit are off unless you set them. `helm install` was not run. Raw manifests live in `deployment/kubernetes/`. See `docs/deployment/kubernetes.md`.
+The default chart runs API, UI, and PostgreSQL + pgvector. `values-eks.yaml` turns that database off and expects an RDS URL. Raw manifests are `kubectl apply -k deployment/kubernetes`.
+
+On this host, Minikube v1.35.0 ran the chart. The three pods became ready, `GET /documents` created the `vector` extension, `helm upgrade` recorded revision 2, and `helm rollback` returned to revision 1. EKS was not used.
 
 ## AWS
 
-The target is EKS for the chart, RDS PostgreSQL with pgvector, S3 for original files, an ALB, Secrets Manager, and an optional GPU node group. IAM for the API is limited to one S3 prefix and two secrets. No AWS API was called. See `docs/deployment/aws.md`.
+The target is EKS for the chart, RDS PostgreSQL with pgvector, S3 for original files, an ALB, Secrets Manager, and an optional GPU node group. IAM for the API is limited to one S3 prefix and two secrets. No AWS API was called. Install with `values-eks.yaml` only after the image is in a registry the nodes can pull. See `docs/deployment/aws.md`.
 
 ## Security
 
@@ -287,7 +302,7 @@ The target is EKS for the chart, RDS PostgreSQL with pgvector, S3 for original f
 - Coarse chunkers look better on Recall@K on this small corpus because a whole manual is one hit.
 - Entity patterns miss tracking codes such as `ARX-77` on purpose.
 - Streamlit was not clicked through in a browser.
-- The Docker image was not built. Kubernetes was not installed. AWS was not deployed.
+- Docker Compose and Minikube were started on this machine. AWS was not deployed. Streamlit was not clicked through in a browser. Chat needs a running Ollama or vLLM.
 - LoRA was not trained.
 
 ## Future improvements

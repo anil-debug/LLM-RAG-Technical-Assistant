@@ -1,50 +1,106 @@
-# Local stack: API, Streamlit, PostgreSQL 16 with pgvector.
-# The database password is a local development value. Do not reuse it in AWS.
-# `docker compose config` validates this file. An image build is a separate step.
+# Local stack. This path does not use Kubernetes.
+# Kubernetes and AWS EKS are separate paths. See docs/deployment/.
+#
+# Same image tag the cluster uses: technical-rag-assistant:0.1.0
+# Copy .env.example to .env before the first start. Compose reads that file.
+# Values under `environment` replace the host-oriented .env entries that
+# would be wrong inside the Compose network (database host, UI API URL).
 
 services:
   postgres:
     image: pgvector/pgvector:pg16
     environment:
-      POSTGRES_USER: rag
-      POSTGRES_PASSWORD: rag
-      POSTGRES_DB: rag
+      POSTGRES_USER: ${POSTGRES_USER:-rag}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-rag}
+      POSTGRES_DB: ${POSTGRES_DB:-rag}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U rag -d rag"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-rag} -d ${POSTGRES_DB:-rag}"]
       interval: 5s
       timeout: 5s
       retries: 20
+    restart: unless-stopped
 
   api:
+    image: technical-rag-assistant:0.1.0
     build: .
+    env_file:
+      - .env
     environment:
       VECTOR_BACKEND: postgres
-      DATABASE_URL: postgresql://rag:rag@postgres:5432/rag
-      LLM_BASE_URL: ${LLM_BASE_URL:-http://host.docker.internal:11434/v1}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-rag}:${POSTGRES_PASSWORD:-rag}@postgres:5432/${POSTGRES_DB:-rag}
+      EMBEDDING_DEVICE: ${EMBEDDING_DEVICE:-cpu}
+      # Do not reuse LLM_BASE_URL from .env. That file points at localhost for a
+      # process on the host. The Compose default is the ollama service below.
+      LLM_BASE_URL: ${COMPOSE_LLM_BASE_URL:-http://ollama:11434/v1}
       LLM_MODEL: ${LLM_MODEL:-qwen2.5:3b}
-      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-BAAI/bge-base-en-v1.5}
-      EMBEDDING_DEVICE: cpu
+      LLM_API_KEY: ${LLM_API_KEY:-ollama}
       RERANKER_ENABLED: ${RERANKER_ENABLED:-false}
-      CHUNK_TOKENIZER: regex
+      CHUNK_TOKENIZER: ${CHUNK_TOKENIZER:-regex}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
-      - "8000:8000"
+      - "${API_PORT:-8000}:8000"
     depends_on:
       postgres:
         condition: service_healthy
+      ollama:
+        condition: service_started
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+    restart: unless-stopped
 
   ui:
+    image: technical-rag-assistant:0.1.0
     build: .
-    command: ["streamlit", "run", "frontend/app.py", "--server.address", "0.0.0.0", "--server.port", "8501"]
+    command:
+      [
+        "streamlit",
+        "run",
+        "frontend/app.py",
+        "--server.address",
+        "0.0.0.0",
+        "--server.port",
+        "8501",
+      ]
     environment:
       API_BASE_URL: http://api:8000
     ports:
-      - "8501:8501"
+      - "${UI_PORT:-8501}:8501"
     depends_on:
-      - api
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:latest
+    environment:
+      OLLAMA_MODEL: ${LLM_MODEL:-qwen2.5:3b}
+    ports:
+      - "${OLLAMA_PORT:-11434}:11434"
+    volumes:
+      - ollama:/root/.ollama
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    restart: unless-stopped
 
 volumes:
   pgdata:
+  ollama:

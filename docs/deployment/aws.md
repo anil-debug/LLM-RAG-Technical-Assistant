@@ -1,5 +1,7 @@
 # AWS design
 
+This path does not use Docker Compose and does not install the in-cluster Postgres StatefulSet. Compose is the laptop stack. The Kubernetes chart with `values-eks.yaml` is what EKS runs, with RDS as the database. Install, upgrade, rollback, and uninstall commands are in `docs/deployment/kubernetes.md`.
+
 This is a design. No AWS account was used. No VPC, cluster, database, bucket, load balancer, or secret was created. Costs below are resource categories, not a bill.
 
 ## Layout

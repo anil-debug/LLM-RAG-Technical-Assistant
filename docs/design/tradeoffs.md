@@ -75,7 +75,7 @@ The training questions are generated from the manuals and checked so none of the
 
 ## Why Kubernetes?
 
-The API, the UI, configuration, and secrets are separate objects. Readiness (`/ready`) gates traffic until the process can ping its store. Liveness (`/health`) only checks that the process answers. Resource requests and limits keep a model process from consuming a node without a bound. The chart renders with `helm template`. It was not installed on a cluster.
+The API, the UI, configuration, and secrets are separate objects. Readiness (`/ready`) gates traffic until the process can ping its store. Liveness (`/health`) only checks that the process answers. Resource requests and limits keep a model process from consuming a node without a bound. The chart renders with `helm template`. It was later installed on Minikube. That run is not an EKS deployment.
 
 ## Why EKS?
 

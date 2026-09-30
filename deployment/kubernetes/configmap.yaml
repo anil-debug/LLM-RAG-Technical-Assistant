@@ -5,7 +5,7 @@ metadata:
   labels:
     app.kubernetes.io/name: technical-rag-assistant
 data:
-  VECTOR_BACKEND: memory
+  VECTOR_BACKEND: postgres
   EMBEDDING_MODEL: BAAI/bge-base-en-v1.5
   EMBEDDING_DIM: "768"
   EMBEDDING_DEVICE: cpu
