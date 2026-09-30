@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: technical-rag-ui
+  labels:
+    app.kubernetes.io/name: technical-rag-assistant
+    app.kubernetes.io/component: ui
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: technical-rag-assistant
+    app.kubernetes.io/component: ui
+  ports:
+    - name: http
+      port: 8501
+      targetPort: http

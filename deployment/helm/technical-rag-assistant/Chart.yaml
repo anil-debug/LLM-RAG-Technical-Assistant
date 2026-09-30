@@ -1,0 +1,6 @@
+apiVersion: v2
+name: technical-rag-assistant
+description: Technical RAG assistant API and Streamlit UI
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

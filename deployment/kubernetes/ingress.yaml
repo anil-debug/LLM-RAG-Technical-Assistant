@@ -1,0 +1,31 @@
+# Optional. Apply only when an ingress controller exists.
+# The Helm chart keeps ingress disabled unless ingress.enabled=true.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: technical-rag
+  labels:
+    app.kubernetes.io/name: technical-rag-assistant
+spec:
+  ingressClassName: alb
+  rules:
+    - host: rag.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: technical-rag-ui
+                port:
+                  number: 8501
+    - host: api.rag.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: technical-rag-api
+                port:
+                  number: 8000

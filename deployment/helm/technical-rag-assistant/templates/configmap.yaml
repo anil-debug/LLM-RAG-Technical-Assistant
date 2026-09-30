@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "rag.fullname" . }}-config
+  labels:
+    {{- include "rag.labels" . | nindent 4 }}
+data:
+  VECTOR_BACKEND: {{ .Values.config.vectorBackend | quote }}
+  EMBEDDING_MODEL: {{ .Values.config.embeddingModel | quote }}
+  EMBEDDING_DIM: {{ .Values.config.embeddingDim | quote }}
+  EMBEDDING_DEVICE: {{ .Values.config.embeddingDevice | quote }}
+  CHUNK_TOKENIZER: {{ .Values.config.chunkTokenizer | quote }}
+  LLM_PROVIDER: {{ .Values.config.llmProvider | quote }}
+  LLM_BASE_URL: {{ .Values.config.llmBaseUrl | quote }}
+  LLM_MODEL: {{ .Values.config.llmModel | quote }}
+  RERANKER_ENABLED: {{ .Values.config.rerankerEnabled | quote }}
+  LOG_LEVEL: {{ .Values.config.logLevel | quote }}
+  API_HOST: "0.0.0.0"
+  API_PORT: "8000"
