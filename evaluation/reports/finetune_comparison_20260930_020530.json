@@ -1,0 +1,34 @@
+{
+  "arms": [
+    "base",
+    "base_rag",
+    "finetuned",
+    "finetuned_rag"
+  ],
+  "configuration": {
+    "adapter_path": "/mnt/ssd/anil/LLM-RAG-Technical-Assistant/models/lora",
+    "arms": [
+      "base",
+      "base_rag",
+      "finetuned",
+      "finetuned_rag"
+    ],
+    "held_out_dataset": "evaluation/datasets/golden.jsonl"
+  },
+  "dataset_version": "sample-v1",
+  "git_revision": "unknown",
+  "machine": {
+    "cpu_count": 76,
+    "cuda_available": false,
+    "memory_total_bytes": 66992488448,
+    "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+    "python": "3.12.14"
+  },
+  "methodology": "When executed, each arm answers the golden questions. base and finetuned see no retrieved chunks. base_rag and finetuned_rag see the same retrieved context. Training loss is not copied into these metrics.",
+  "metrics": null,
+  "model_name": "qwen2.5:3b",
+  "python": "3.12.14",
+  "reason": "The four-way comparison was not executed: no LoRA adapter has been trained; no LLM generator is reachable. Arms would be base, base+RAG, fine-tuned, and fine-tuned+RAG on the golden set, which is disjoint from the training questions.",
+  "status": "NOT_EXECUTED",
+  "timestamp": "2026-09-30T02:05:30.335124+00:00"
+}

@@ -1,0 +1,50 @@
+{
+  "configuration": {
+    "adapter": "low-rank matrices A and B",
+    "alpha": 16,
+    "base_weights": "frozen",
+    "bitsandbytes_installed": false,
+    "cuda_available": false,
+    "examples": 240,
+    "formula": "W' = W + B A",
+    "golden_set": "held out; training questions are checked against it",
+    "qlora_requested": false,
+    "rank": 8,
+    "target_modules": [
+      "q_proj",
+      "v_proj"
+    ]
+  },
+  "dataset_version": "sample-v1",
+  "git_revision": "unknown",
+  "machine": {
+    "cpu_count": 76,
+    "cuda_available": false,
+    "memory_total_bytes": 66992488448,
+    "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+    "python": "3.12.14"
+  },
+  "methodology": null,
+  "metrics": null,
+  "model_name": null,
+  "plan": {
+    "adapter": "low-rank matrices A and B",
+    "alpha": 16,
+    "base_weights": "frozen",
+    "bitsandbytes_installed": false,
+    "cuda_available": false,
+    "examples": 240,
+    "formula": "W' = W + B A",
+    "golden_set": "held out; training questions are checked against it",
+    "qlora_requested": false,
+    "rank": 8,
+    "target_modules": [
+      "q_proj",
+      "v_proj"
+    ]
+  },
+  "python": "3.12.14",
+  "reason": "REQUIRES GPU. torch.cuda.is_available() is false, so LoRA/QLoRA training did not start and no adapter was written. On a CUDA machine run: uv run python scripts/train_lora.py --model <causal-lm-id> --output models/lora",
+  "status": "NOT_EXECUTED",
+  "timestamp": "2026-09-30T02:05:28.921350+00:00"
+}
