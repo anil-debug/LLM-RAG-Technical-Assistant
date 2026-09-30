@@ -1,0 +1,67 @@
+{
+  "configuration": {
+    "n_embd": 32,
+    "n_head": 4,
+    "n_layer": 2,
+    "n_positions": 32,
+    "vocab_size": 128
+  },
+  "dataset_version": "sample-v1",
+  "git_revision": "unknown",
+  "machine": {
+    "cpu_count": 76,
+    "cuda_available": false,
+    "memory_total_bytes": 66992488448,
+    "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+    "python": "3.12.14"
+  },
+  "methodology": "GPT2LMHeadModel(GPT2Config(...)) with the default random initialization. No checkpoint download. model.eval() and torch.inference_mode() wrap the forward pass and generate(). input_ids are hand-written integers, not the output of a trained tokenizer. RSS is /proc/self/status VmRSS. cuda_peak_bytes is null because this run is on CPU. Do not treat generated_ids as language-model quality.",
+  "metrics": {
+    "attention_layers": 2,
+    "attention_mask_shape": [
+      1,
+      5
+    ],
+    "attention_shape": [
+      1,
+      4,
+      5,
+      5
+    ],
+    "cuda_peak_bytes": null,
+    "device": "cpu",
+    "dtype": "torch.float32",
+    "generated_ids": [
+      1,
+      10,
+      11,
+      12,
+      13,
+      13,
+      13,
+      13,
+      13
+    ],
+    "input_ids": [
+      1,
+      10,
+      11,
+      12,
+      13
+    ],
+    "logits_shape": [
+      1,
+      5,
+      128
+    ],
+    "new_token_count": 4,
+    "parameter_count": 22272,
+    "rss_bytes": 525824000
+  },
+  "model_name": "random-gpt2-config",
+  "pretrained": false,
+  "python": "3.12.14",
+  "reason": null,
+  "status": "EXECUTED",
+  "timestamp": "2026-09-30T02:05:27.121768+00:00"
+}
