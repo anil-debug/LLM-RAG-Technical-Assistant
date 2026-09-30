@@ -1,0 +1,23 @@
+{
+  "configuration": {
+    "document_classifier_path": "models/document_classifier.pt",
+    "section_classifier_path": "models/section_classifier.pt",
+    "section_labels": "intelligence.section_classifier.SECTION_LABELS"
+  },
+  "dataset_version": "sample-v1",
+  "git_revision": "unknown",
+  "machine": {
+    "cpu_count": 76,
+    "cuda_available": false,
+    "memory_total_bytes": 66992488448,
+    "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+    "python": "3.12.14"
+  },
+  "methodology": "A linear layer on frozen embeddings, Adam, cross-entropy. The encoder is not updated. No accuracy is reported until that loop runs on real embeddings.",
+  "metrics": null,
+  "model_name": "BAAI/bge-base-en-v1.5",
+  "python": "3.12.14",
+  "reason": "Classifier training was not executed because the embedding model could not be loaded (We couldn't connect to 'https://huggingface.co' to load the files, and couldn't find them in the cached files.\nCheck your internet connection or see how to run the library in offline mode at 'https://huggingface.co/docs/transformers/installation#offline-mode'.). Unit tests fit LinearClassifier on synthetic features. After the weights exist, encode data/sample/labels/sections.jsonl and documents.jsonl, call intelligence.linear_classifier.train_classifier, and save the state dict to the configured .pt paths.",
+  "status": "NOT_EXECUTED",
+  "timestamp": "2026-09-30T02:05:35.397376+00:00"
+}

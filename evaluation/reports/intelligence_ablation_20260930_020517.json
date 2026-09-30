@@ -1,0 +1,51 @@
+{
+  "configuration": {
+    "bm25_b": 0.75,
+    "bm25_k1": 1.5,
+    "chunk_overlap_tokens": 72,
+    "chunk_strategy": "structure",
+    "chunk_target_tokens": 480,
+    "rrf_k": 60
+  },
+  "dataset_version": "sample-v1",
+  "git_revision": "unknown",
+  "machine": {
+    "cpu_count": 76,
+    "cuda_available": false,
+    "memory_total_bytes": 66992488448,
+    "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+    "python": "3.12.14"
+  },
+  "methodology": "Both arms use BM25. The boosted arm adds 1.0 to the BM25 score when a stored entity surface overlaps the query, then re-sorts. Section classification, document classification, and summarization are not in this comparison. An improvement is not assumed.",
+  "metrics": {
+    "bm25": {
+      "count": 43,
+      "mrr": 0.8754152823920266,
+      "precision": {
+        "10": 0.12093023255813953,
+        "5": 0.23255813953488372
+      },
+      "recall": {
+        "10": 0.9767441860465116,
+        "5": 0.9534883720930233
+      }
+    },
+    "bm25_entity_boost": {
+      "count": 43,
+      "mrr": 0.8777408637873754,
+      "precision": {
+        "10": 0.12325581395348839,
+        "5": 0.23255813953488372
+      },
+      "recall": {
+        "10": 1.0,
+        "5": 0.9534883720930233
+      }
+    }
+  },
+  "model_name": null,
+  "python": "3.12.14",
+  "reason": null,
+  "status": "EXECUTED",
+  "timestamp": "2026-09-30T02:05:17.097466+00:00"
+}

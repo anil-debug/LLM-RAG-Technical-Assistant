@@ -1,0 +1,86 @@
+{
+  "configuration": {
+    "bm25_b": 0.75,
+    "bm25_k1": 1.5,
+    "chunk_overlap_tokens": 72,
+    "chunk_strategy": "structure",
+    "chunk_target_tokens": 480,
+    "rrf_k": 60
+  },
+  "dataset_version": "sample-v1",
+  "git_revision": "unknown",
+  "machine": {
+    "cpu_count": 76,
+    "cuda_available": false,
+    "memory_total_bytes": 66992488448,
+    "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+    "python": "3.12.14"
+  },
+  "methodology": "Gold labels were written by hand for a few passages, including tracking code ARX-77, which the patterns are not supposed to match. Precision and recall use label plus casefolded surface. This is not a learned NER model.",
+  "metrics": {
+    "micro": {
+      "false_negatives": [
+        [
+          "tracking_code",
+          "arx-77"
+        ]
+      ],
+      "false_positives": [],
+      "precision": 1.0,
+      "recall": 0.9090909090909091,
+      "true_positives": 10
+    },
+    "per_passage": [
+      {
+        "false_negatives": [
+          [
+            "tracking_code",
+            "arx-77"
+          ]
+        ],
+        "false_positives": [],
+        "id": "arx-tracking",
+        "precision": 1.0,
+        "recall": 0.5,
+        "true_positives": 1
+      },
+      {
+        "false_negatives": [],
+        "false_positives": [],
+        "id": "fan-stall",
+        "precision": 1.0,
+        "recall": 1.0,
+        "true_positives": 4
+      },
+      {
+        "false_negatives": [],
+        "false_positives": [],
+        "id": "post-dimm",
+        "precision": 1.0,
+        "recall": 1.0,
+        "true_positives": 3
+      },
+      {
+        "false_negatives": [],
+        "false_positives": [],
+        "id": "redfish-root",
+        "precision": 1.0,
+        "recall": 1.0,
+        "true_positives": 3
+      },
+      {
+        "false_negatives": [],
+        "false_positives": [],
+        "id": "nvme-error",
+        "precision": 1.0,
+        "recall": 1.0,
+        "true_positives": 1
+      }
+    ]
+  },
+  "model_name": null,
+  "python": "3.12.14",
+  "reason": null,
+  "status": "EXECUTED",
+  "timestamp": "2026-09-30T02:05:15.490955+00:00"
+}
