@@ -1,0 +1,101 @@
+{
+  "by_tag": {
+    "exact-identifier": {
+      "count": 15,
+      "mrr": 1.0,
+      "precision": {
+        "10": 0.12000000000000001,
+        "5": 0.22666666666666668
+      },
+      "recall": {
+        "10": 1.0,
+        "5": 1.0
+      }
+    },
+    "multi-hop": {
+      "count": 8,
+      "mrr": 0.875,
+      "precision": {
+        "10": 0.1625,
+        "5": 0.325
+      },
+      "recall": {
+        "10": 1.0,
+        "5": 1.0
+      }
+    },
+    "multi-turn": {
+      "count": 5,
+      "mrr": 0.6285714285714286,
+      "precision": {
+        "10": 0.08,
+        "5": 0.12000000000000002
+      },
+      "recall": {
+        "10": 0.8,
+        "5": 0.6
+      }
+    },
+    "technical": {
+      "count": 15,
+      "mrr": 0.8333333333333334,
+      "precision": {
+        "10": 0.11333333333333334,
+        "5": 0.22666666666666668
+      },
+      "recall": {
+        "10": 1.0,
+        "5": 1.0
+      }
+    }
+  },
+  "chunk_count": 32,
+  "configuration": {
+    "bm25_b": 0.75,
+    "bm25_k1": 1.5,
+    "chunk_overlap_tokens": 72,
+    "chunk_strategy": "structure",
+    "chunk_target_tokens": 480,
+    "rrf_k": 60
+  },
+  "dataset_version": "sample-v1",
+  "git_revision": "unknown",
+  "latency_ms": {
+    "mean": 0.09250184986740351,
+    "method": "time.perf_counter around BM25Index.search. Embedding and LLM time are not included.",
+    "p50": 0.09172398131340742,
+    "p95": 0.13124896213412285
+  },
+  "machine": {
+    "cpu_count": 76,
+    "cuda_available": false,
+    "memory_total_bytes": 66992488448,
+    "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+    "python": "3.12.14"
+  },
+  "memory": {
+    "method": "/proc/self/status VmRSS after the BM25 loop. Process RSS, not CUDA memory.",
+    "rss_bytes": 62554112
+  },
+  "methodology": "Recall@K is the fraction of expected_any_substrings that appear in top-k hits whose filename is in expected_files. Precision@K uses denominator k. MRR uses the first hit that is in an expected file and contains a labeled substring. Multi-turn items use the labeled standalone question. This run did not embed queries and did not call an LLM.",
+  "metrics": {
+    "count": 43,
+    "mrr": 0.8754152823920266,
+    "precision": {
+      "10": 0.12093023255813953,
+      "5": 0.23255813953488372
+    },
+    "recall": {
+      "10": 0.9767441860465116,
+      "5": 0.9534883720930233
+    }
+  },
+  "model_name": null,
+  "python": "3.12.14",
+  "questions_excluded_unanswerable": 7,
+  "questions_scored": 43,
+  "reason": null,
+  "retriever": "bm25",
+  "status": "EXECUTED",
+  "timestamp": "2026-09-30T02:05:12.359076+00:00"
+}

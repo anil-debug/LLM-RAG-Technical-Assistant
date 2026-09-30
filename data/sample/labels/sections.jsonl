@@ -1,0 +1,8 @@
+{"file": "redfish-guide.md", "heading": "What Redfish is", "label": "overview"}
+{"file": "redfish-guide.md", "heading": "Session login", "label": "procedure"}
+{"file": "troubleshooting.md", "heading": "Fan stall", "label": "error_definition"}
+{"file": "troubleshooting.md", "heading": "Memory training", "label": "procedure"}
+{"file": "firmware-update.md", "heading": "BMC and BIOS order", "label": "procedure"}
+{"file": "networking-guide.md", "heading": "BMC link failures", "label": "error_definition"}
+{"file": "server-management.md", "heading": "Factory reset", "label": "procedure"}
+{"file": "troubleshooting.md", "heading": "What this guide does not publish", "label": "warning"}

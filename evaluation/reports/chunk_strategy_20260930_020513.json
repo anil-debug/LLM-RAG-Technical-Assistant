@@ -1,0 +1,79 @@
+{
+  "configuration": {
+    "bm25_b": 0.75,
+    "bm25_k1": 1.5,
+    "chunk_overlap_tokens": 72,
+    "chunk_strategy": "structure",
+    "chunk_target_tokens": 480,
+    "rrf_k": 60
+  },
+  "dataset_version": "sample-v1",
+  "git_revision": "unknown",
+  "machine": {
+    "cpu_count": 76,
+    "cuda_available": false,
+    "memory_total_bytes": 66992488448,
+    "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+    "python": "3.12.14"
+  },
+  "methodology": "Each strategy re-chunks the same sample files. Retrieval is BM25 with identical k1, b, and k=10. No embedding model is involved, so this does not rank bi-encoders.",
+  "metrics": {
+    "fixed": {
+      "chunk_count": 9,
+      "count": 43,
+      "mrr": 0.9186046511627907,
+      "precision": {
+        "10": 0.10232558139534885,
+        "5": 0.2046511627906977
+      },
+      "recall": {
+        "10": 1.0,
+        "5": 1.0
+      }
+    },
+    "recursive": {
+      "chunk_count": 9,
+      "count": 43,
+      "mrr": 0.9186046511627907,
+      "precision": {
+        "10": 0.10232558139534885,
+        "5": 0.2046511627906977
+      },
+      "recall": {
+        "10": 1.0,
+        "5": 1.0
+      }
+    },
+    "structure": {
+      "chunk_count": 32,
+      "count": 43,
+      "mrr": 0.8754152823920266,
+      "precision": {
+        "10": 0.12093023255813953,
+        "5": 0.23255813953488372
+      },
+      "recall": {
+        "10": 0.9767441860465116,
+        "5": 0.9534883720930233
+      }
+    },
+    "token": {
+      "chunk_count": 9,
+      "count": 43,
+      "mrr": 0.9186046511627907,
+      "precision": {
+        "10": 0.10232558139534885,
+        "5": 0.2046511627906977
+      },
+      "recall": {
+        "10": 1.0,
+        "5": 1.0
+      }
+    }
+  },
+  "model_name": null,
+  "python": "3.12.14",
+  "reason": null,
+  "status": "EXECUTED",
+  "timestamp": "2026-09-30T02:05:13.943927+00:00"
+}
