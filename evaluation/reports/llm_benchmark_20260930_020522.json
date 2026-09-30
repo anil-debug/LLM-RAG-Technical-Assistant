@@ -1,0 +1,34 @@
+{
+  "configuration": {
+    "attempts": [
+      {
+        "base_url": "http://localhost:11434/v1",
+        "error": "[Errno 111] Connection refused",
+        "model": "qwen2.5:3b",
+        "reachable": false
+      },
+      {
+        "base_url": "http://localhost:11434/v1",
+        "error": "[Errno 111] Connection refused",
+        "model": "qwen2.5:7b",
+        "reachable": false
+      }
+    ]
+  },
+  "dataset_version": "sample-v1",
+  "git_revision": "unknown",
+  "machine": {
+    "cpu_count": 76,
+    "cuda_available": false,
+    "memory_total_bytes": 66992488448,
+    "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+    "python": "3.12.14"
+  },
+  "methodology": "Generation quality is scored only on answers the server returns, with retrieved context held fixed across models. This run did not generate answers.",
+  "metrics": null,
+  "model_name": null,
+  "python": "3.12.14",
+  "reason": "LLM benchmark was not executed. Retrieved contexts were not frozen and no answers were scored. Start Ollama or vLLM, then rerun uv run python scripts/benchmark_models.py. Client latency is the measurement for a remote server. Add process RSS only when the server is local and its PID is observable. Do not label remote time as GPU memory.",
+  "status": "NOT_EXECUTED",
+  "timestamp": "2026-09-30T02:05:22.221762+00:00"
+}

@@ -1,0 +1,75 @@
+{
+  "configuration": {
+    "attempts": [
+      {
+        "error": "We couldn't connect to 'https://huggingface.co' to load the files, and couldn't find them in the cached files.\nCheck your internet connection or see how to run the library in offline mode at 'https://huggingface.co/docs/transformers/installation#offline-mode'.",
+        "loaded": false,
+        "model_name": "BAAI/bge-base-en-v1.5"
+      },
+      {
+        "error": "We couldn't connect to 'https://huggingface.co' to load the files, and couldn't find them in the cached files.\nCheck your internet connection or see how to run the library in offline mode at 'https://huggingface.co/docs/transformers/installation#offline-mode'.",
+        "loaded": false,
+        "model_name": "intfloat/e5-base-v2"
+      }
+    ],
+    "config": {
+      "dataset_version": "sample-v1",
+      "embedding_models": [
+        "BAAI/bge-base-en-v1.5",
+        "intfloat/e5-base-v2"
+      ],
+      "llm_models": [
+        {
+          "base_url": "http://localhost:11434/v1",
+          "name": "qwen2.5:3b"
+        },
+        {
+          "base_url": "http://localhost:11434/v1",
+          "name": "qwen2.5:7b"
+        }
+      ],
+      "memory_methods": {
+        "ollama_local": "client latency + approximate process RSS if the PID is observable",
+        "pytorch": "RSS + CUDA peak memory",
+        "remote_server": "client latency only"
+      },
+      "metrics": {
+        "generation": [
+          "answer_relevance_proxy",
+          "faithfulness_proxy",
+          "citation_accuracy",
+          "latency"
+        ],
+        "retrieval": [
+          "recall@5",
+          "recall@10",
+          "precision@5",
+          "precision@10",
+          "mrr"
+        ]
+      },
+      "reranker": "BAAI/bge-reranker-base",
+      "retrieval": {
+        "candidates": 30,
+        "rrf_k": 60,
+        "top_n": 8
+      }
+    }
+  },
+  "dataset_version": "sample-v1",
+  "git_revision": "unknown",
+  "machine": {
+    "cpu_count": 76,
+    "cuda_available": false,
+    "memory_total_bytes": 66992488448,
+    "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+    "python": "3.12.14"
+  },
+  "methodology": "No quality metric is reported from a hashing embedder or from a single model. Memory would be process RSS plus CUDA peak when a GPU is used.",
+  "metrics": null,
+  "model_name": null,
+  "python": "3.12.14",
+  "reason": "Embedding benchmark was not executed. Both BAAI/bge-base-en-v1.5 and intfloat/e5-base-v2 must load before Recall@K, MRR, indexing time, query latency, and memory can be compared. Download them on a machine with network access and rerun uv run python scripts/benchmark_models.py",
+  "status": "NOT_EXECUTED",
+  "timestamp": "2026-09-30T02:05:22.205096+00:00"
+}

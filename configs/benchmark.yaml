@@ -1,0 +1,32 @@
+# Models the benchmark script is allowed to try.
+# A model that does not load produces NOT_EXECUTED, not a guessed score.
+dataset_version: sample-v1
+embedding_models:
+  - BAAI/bge-base-en-v1.5
+  - intfloat/e5-base-v2
+reranker: BAAI/bge-reranker-base
+retrieval:
+  candidates: 30
+  top_n: 8
+  rrf_k: 60
+llm_models:
+  - name: qwen2.5:3b
+    base_url: http://localhost:11434/v1
+  - name: qwen2.5:7b
+    base_url: http://localhost:11434/v1
+metrics:
+  retrieval:
+    - recall@5
+    - recall@10
+    - precision@5
+    - precision@10
+    - mrr
+  generation:
+    - answer_relevance_proxy
+    - faithfulness_proxy
+    - citation_accuracy
+    - latency
+memory_methods:
+  pytorch: RSS + CUDA peak memory
+  ollama_local: client latency + approximate process RSS if the PID is observable
+  remote_server: client latency only
