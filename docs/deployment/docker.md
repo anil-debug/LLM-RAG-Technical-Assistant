@@ -39,13 +39,9 @@ Inside the Compose network these values replace the host-oriented ones from `.en
 
 `LLM_BASE_URL` in `.env` is for a process on the host (`uv run`). Compose does not copy it into the API container, because `localhost` inside the container is the API itself. The container uses `COMPOSE_LLM_BASE_URL`, which defaults to `http://ollama:11434/v1`.
 
-Pull the model once after the Ollama container is up. The name must match `LLM_MODEL`:
+The Ollama container pulls `LLM_MODEL` (default `qwen2.5:3b`) the first time it starts. That download is about 1.9 GB. Until it finishes, `POST /v1/chat/completions` returns HTTP 404 with `model 'qwen2.5:3b' not found`. The API reports that as `model_unavailable`. `docker-compose up --build` does not remove the model volume, so the next start reuses the downloaded weights.
 
-```bash
-docker-compose exec ollama ollama pull qwen2.5:3b
-```
-
-`/health` and `/ready` succeed before that pull. `/chat` returns 503 `model_unavailable` when the Ollama process is down, and a model-not-found error when the server is up but the model was not pulled. Set `COMPOSE_LLM_BASE_URL=http://host.docker.internal:11434/v1` only when Ollama is already running on the host.
+`/health` and `/ready` do not wait for the model. Set `COMPOSE_LLM_BASE_URL=http://host.docker.internal:11434/v1` only when Ollama is already running on the host instead of in Compose.
 
 Change the published ports in `.env` with `API_PORT`, `UI_PORT`, and `POSTGRES_PORT` if 8000, 8501, or 5432 are already taken.
 
